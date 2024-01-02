@@ -57,7 +57,7 @@ if __name__ == '__main__':
     simfield = EField('/scratch/zpli/EField3d.csv')
     endpoints = []
     XBins, YBins, ZBins = wp_bins()
-    wpfile = ROOT.TFile('WP_3d_y{}.root'.format(args.xindex), 'RECREATE')
+    wpfile = ROOT.TFile('./outputs/WP_3d_x{}.root'.format(args.xindex), 'RECREATE')
     h_3D = ROOT.TH3F('h_3D', '', len(XBins) - 1, XBins, len(YBins) - 1, YBins, len(ZBins) - 1, ZBins)
     for i in range(h_3D.GetNbinsX()):
         for j in range(h_3D.GetNbinsY()):
