@@ -41,9 +41,22 @@ if __name__ == '__main__':
     print('finished writting of  axes')
     XBins, YBins, ZBins = wp_bins()
     wpf = ROOT.TF1('wpf', '[0] + [1]*x + [2]*x*x + [3]*x*x*x + [4]*x*x*x*x + [5]*x*x*x*x*x + [6]*x*x*x*x*x*x + [7]*x*x*x*x*x*x*x', 0, 150)
-    for ix in range(len(XBins)):
-        for y in YBins:
-            read_wp('outputs/WP_3d_x{}.root'.format(ix))
+    for xbin in range(1, xaxis_new.GetNbins() + 1):
+        x = XBins[xbin - 1]
+        print('Processing file {}'.format(xbin - 1))
+        #read_wp('outputs/WP_3d_x{}.root'.format(xbin - 1))
+        for ybin in range(1, yaxis_new.GetNbins() + 1):
+            y = YBins[ybin - 1]
+            name = 'wp_x'+str(xbin)+'_y'+str(ybin)
+            wpHist = ROOT.TH1F(name, '', h_3d.GetNbinsZ() , ZBins)
+            print(y)
+            binx = 0
+            biny = 0
+            binz = 0
+            binx = xaxis_new.FindBin(XBins[ix] + 0.05)
+            biny = yaxis_new.FindBin(y + 0.05)
+            #binz = h_3D.GetZaxis().FindBin(init_z + 0.05)
+            #read_wp('outputs/WP_3d_x{}.root'.format(ix))
     """
     for xbin in range(1, xaxis_new.GetNbins() + 1):
         h_3d = read_wp('./outputs/WP_3d_x{}.root'.format(xbin-1))
