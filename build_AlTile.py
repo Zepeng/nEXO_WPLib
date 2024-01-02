@@ -5,17 +5,22 @@ import sys
 import os
 import string
 from array import array
+from WP_nexo_new import wp_bins
 
 def read_axes(tfile):
     h3dfile = ROOT.TFile(tfile, 'READ')
     h_3d = h3dfile.Get('h_3D')
-    xaxis_new = h_3d.GetXaxis()
-    yaxis_new = h_3d.GetYaxis()
-    zaxis_new = h_3d.GetZaxis()
-    return xaxis_new.Clone(), yaxis_new.Clone(), zaxis_new.Clone()
+    xaxis_new = h_3d.GetXaxis().Clone()
+    yaxis_new = h_3d.GetYaxis().Clone()
+    zaxis_new = h_3d.GetZaxis().Clone()
+    h3dfile.Close()
+    return xaxis_new, yaxis_new, zaxis_new
 
-def read_wp(tfile, x, y):
-    return 0
+def read_wp(tfile):
+    h3dfile = ROOT.TFile(tfile, 'READ')
+    h_3d = h3dfile.Get('h_3D').Clone()
+    h3dfile.Close()
+    return h_3d
 
 if __name__ == '__main__':
     ROOT.gROOT.SetBatch(True)
@@ -34,19 +39,12 @@ if __name__ == '__main__':
     yaxis_new.Write()
     zaxis_new.Write()
     print('finished writting of  axes')
-    ZBins = array('d')
-    for i in range(980):
-        if i < 500:
-            ZBins.append(i*0.1)
-        elif i < 600:
-            ZBins.append( (i-500)*0.5+ 50)
-        elif i < 700:
-            ZBins.append((i-600) + 100)
-        elif i < 800:
-            ZBins.append((i-700)*2 + 200)
-        else:
-            ZBins.append((i-800)*5 + 400)
+    XBins, YBins, ZBins = wp_bins()
     wpf = ROOT.TF1('wpf', '[0] + [1]*x + [2]*x*x + [3]*x*x*x + [4]*x*x*x*x + [5]*x*x*x*x*x + [6]*x*x*x*x*x*x + [7]*x*x*x*x*x*x*x', 0, 150)
+    for ix in range(len(XBins)):
+        for y in YBins:
+            read_wp('outputs/WP_3d_x{}.root'.format(ix))
+    """
     for xbin in range(1, xaxis_new.GetNbins() + 1):
         h_3d = read_wp('./outputs/WP_3d_x{}.root'.format(xbin-1))
         for ybin in range(1, yaxis_new.GetNbins() + 1):
@@ -54,7 +52,6 @@ if __name__ == '__main__':
             wpHist = ROOT.TH1F(name, '', zaxis_new.GetNbins() , ZBins)
             for k in range(1, zaxis_new.GetNbins() + 1):
                 wpHist.SetBinContent(k, 0)
-            """
             for k in range(1, h_3d.GetNbinsZ() + 1):
                 wpHist.SetBinContent(k, h_3d.GetBinContent(xbin, ybin, k)*1e5)
             #if wpHist.GetMaximum()> 0.9*1e5:
