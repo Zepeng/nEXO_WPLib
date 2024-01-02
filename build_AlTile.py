@@ -31,7 +31,7 @@ if __name__ == '__main__':
 
     #read the axis from a subfile and save for the merged library file.
     wpfile = ROOT.TFile('nEXO_6mm_COMSOL.root', 'RECREATE')
-    xaxis_new, yaxis_new, zaxis_new = read_axes('./outputs/WP_3d_x0.root')
+    xaxis_new, yaxis_new, zaxis_new = read_axes('./outputs/WP_3d_x60.root')
     wpfile.cd()
     xaxis_new.SetTitle('X (mm)')
     xaxis_new.Write()
@@ -44,7 +44,7 @@ if __name__ == '__main__':
     for xbin in range(1, xaxis_new.GetNbins() + 1):
         x = XBins[xbin - 1]
         print('Processing file {}'.format(xbin - 1))
-        #read_wp('outputs/WP_3d_x{}.root'.format(xbin - 1))
+        h_3d = read_wp('outputs/WP_3d_x{}.root'.format(xbin - 1))
         for ybin in range(1, yaxis_new.GetNbins() + 1):
             y = YBins[ybin - 1]
             name = 'wp_x'+str(xbin)+'_y'+str(ybin)
@@ -53,16 +53,8 @@ if __name__ == '__main__':
             binx = 0
             biny = 0
             binz = 0
-            binx = xaxis_new.FindBin(XBins[ix] + 0.05)
+            binx = xaxis_new.FindBin(x + 0.05)
             biny = yaxis_new.FindBin(y + 0.05)
-            #binz = h_3D.GetZaxis().FindBin(init_z + 0.05)
-            #read_wp('outputs/WP_3d_x{}.root'.format(ix))
-    """
-    for xbin in range(1, xaxis_new.GetNbins() + 1):
-        h_3d = read_wp('./outputs/WP_3d_x{}.root'.format(xbin-1))
-        for ybin in range(1, yaxis_new.GetNbins() + 1):
-            name = 'wp_x'+str(xbin)+'_y'+str(ybin)
-            wpHist = ROOT.TH1F(name, '', zaxis_new.GetNbins() , ZBins)
             for k in range(1, zaxis_new.GetNbins() + 1):
                 wpHist.SetBinContent(k, 0)
             for k in range(1, h_3d.GetNbinsZ() + 1):
@@ -106,4 +98,3 @@ if __name__ == '__main__':
                     print(wpHist.GetBinCenter(zbin + 1), wpf.Eval(wpHist.GetBinCenter(zbin+1)), wpHist.GetBinContent(zbin+1))
 #            print xbin,'|',ybin
     wpfile.Close()
-    """
