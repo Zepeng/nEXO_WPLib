@@ -66,8 +66,8 @@ if __name__ == '__main__':
 
     simwp = WPLib('/scratch/zpli/nexo_x0_y0.csv')
     start = time.time()
-    for x in XBins:
-        for y in YBins[args.xindex:args.xindex+1]:
+    for x in XBins[args.xindex:args.xindex+1]:
+        for y in YBins:
             print(x, y, time.time() - start)
             init_x = x
             init_y = y
