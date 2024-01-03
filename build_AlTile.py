@@ -63,7 +63,7 @@ if __name__ == '__main__':
                 #if wpHist.GetMaximum()> 0.9*1e5:
                 #    print(xbin, ybin)
                 if wpHist.GetMaximum() > 90000:
-                    #wpHist.Fit('wpf')
+                    wpHist.Fit('wpf')
                     p0 = wpf.GetParameter(0)
                     p1 = wpf.GetParameter(1)
                     p2 = wpf.GetParameter(2)

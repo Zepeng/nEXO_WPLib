@@ -78,14 +78,14 @@ if __name__ == '__main__':
                 endpoints = simfield.calc_drift([init_x, init_y, init_z],-z )
                 init_x = endpoints[0]
                 init_y = endpoints[1]
-                init_z = endpoints[2]+0.1
+                init_z = endpoints[2]
                 wp = simwp.calc_wp([init_x, init_y, init_z])
                 binx = 0
                 biny = 0
                 binz = 0
                 binx = h_3D.GetXaxis().FindBin(x + 0.05)
                 biny = h_3D.GetYaxis().FindBin(y + 0.05)
-                binz = h_3D.GetZaxis().FindBin(init_z + 0.05)
+                binz = h_3D.GetZaxis().FindBin(z + 0.05)
                 if wp > 1.0:
                     wp = 1.0
                 if binz == 0:
