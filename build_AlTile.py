@@ -5,7 +5,7 @@ import sys
 import os
 import string
 from array import array
-from WP_nexo_new import wp_bins
+from WP_AlTile import wp_bins
 
 def read_axes(tfile):
     h3dfile = ROOT.TFile(tfile, 'READ')
