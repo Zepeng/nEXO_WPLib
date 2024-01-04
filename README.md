@@ -4,3 +4,4 @@ This is the package developed for converting COMSOL simulated weight potential t
 * pandas
 * scipy
 * ROOT
+* COMSOL simulation exported data
