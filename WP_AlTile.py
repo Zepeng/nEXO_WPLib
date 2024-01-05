@@ -75,10 +75,15 @@ if __name__ == '__main__':
             for z in ZBins[::-1]:
                 endpoints = []
                 wp = 0
-                endpoints = simfield.calc_drift([init_x, init_y, init_z],-z )
+                if z > 90:
+                    endpoints = [init_x, init_y, -z]
+                else:
+                    endpoints = simfield.calc_drift([init_x, init_y, init_z],-z )
                 init_x = endpoints[0]
                 init_y = endpoints[1]
                 init_z = endpoints[2]
+                if init_z > -0.0001:
+                    init_z = -0.0001
                 wp = simwp.calc_wp([init_x, init_y, init_z])
                 binx = 0
                 biny = 0
@@ -86,6 +91,7 @@ if __name__ == '__main__':
                 binx = h_3D.GetXaxis().FindBin(x + 0.05)
                 biny = h_3D.GetYaxis().FindBin(y + 0.05)
                 binz = h_3D.GetZaxis().FindBin(z + 0.05)
+                print(x, y, z, init_x, init_y, init_z, binx, biny, binz, wp)
                 if wp > 1.0:
                     wp = 1.0
                 if binz == 0:

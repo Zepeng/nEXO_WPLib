@@ -44,7 +44,9 @@ if __name__ == '__main__':
     for xbin in range(1, xaxis_new.GetNbins() + 1):
         x = XBins[xbin - 1]
         print('Processing file {}'.format(xbin - 1))
-        with ROOT.TFile.Open('outputs/WP_3d_x{}.root'.format(xbin - 1), 'READ') as f:
+        if os.path.isfile('outputs/WP_3d_x{}.root'.format(xbin - 1)):
+            f = ROOT.TFile('outputs/WP_3d_x{}.root'.format(xbin - 1), 'READ')
+        #with ROOT.TFile.Open('outputs/WP_3d_x{}.root'.format(xbin - 1), 'READ') as f:
             h_3d = f.Get('h_3D')
             for ybin in range(1, yaxis_new.GetNbins() + 1):
                 y = YBins[ybin - 1]

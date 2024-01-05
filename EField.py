@@ -1,5 +1,5 @@
 import numpy as np
-import pandas as pd 
+import pandas as pd
 from scipy.interpolate import NearestNDInterpolator
 
 class EField:
@@ -23,14 +23,14 @@ class EField:
         self.fy = NearestNDInterpolator(points, Ey)
         self.fz = NearestNDInterpolator(points, Ez)
     def calc_drift(self, point, z):
-        if z < -90 or z >0.0001:
+        if z < -90 or z >0.0000:
             return point
         else:
             mod_x = point[0]//6
             mod_y = point[1]//6
             init_x = point[0] % 6
             init_y = point[1] % 6
-            init_z = point[2] 
+            init_z = point[2]
             while init_z < z:
                 step = 1
                 if init_z > -15:
@@ -56,7 +56,7 @@ if __name__ == '__main__':
         init_z = -90
         #print(i)
         endpoints.append(simfield.calc_drift([init_x, init_y, -90], -0.1))
-    x, y, z = np.array(endpoints).T 
+    x, y, z = np.array(endpoints).T
     fig1, ax1 = plt.subplots(figsize=(15, 15))
     ax1.hist2d(x, y, bins=(60, 60), cmap='Blues')
     ax1.tick_params(axis='both', which='major', labelsize=22)
