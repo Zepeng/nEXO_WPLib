@@ -1,6 +1,7 @@
 import numpy as np
 import pandas as pd
 from scipy.interpolate import NearestNDInterpolator
+import matplotlib.pyplot as plt
 
 class EField:
     def __init__(self, fcomsol):
@@ -26,10 +27,10 @@ class EField:
         if z < -90 or z >0.0000:
             return point
         else:
-            mod_x = point[0]//6
-            mod_y = point[1]//6
-            init_x = point[0] % 6
-            init_y = point[1] % 6
+            mod_x = abs(point[0])//6
+            mod_y = abs(point[1])//6
+            init_x = abs(point[0]) % 6
+            init_y = abs(point[1]) % 6
             init_z = point[2]
             while init_z < z:
                 step = 1
@@ -43,26 +44,27 @@ class EField:
                 init_y += delta_y/mag*step
                 init_z += delta_z/mag*step
             #print(np.array([init_x + 0.006*mod_x, init_y + 0.006*mod_y, z]) - np.array(point) )
-            return [init_x + 6*mod_x, init_y + 6*mod_y, z]
+            return [point[0]/abs(point[0])*(init_x + 6*mod_x), point[1]/abs(point[1])*(init_y + 6*mod_y), z]
 
 if __name__ == '__main__':
     print('EField Sim')
-    simfield = EField('EField3d.csv')
+    simfield = EField('/scratch/zpli/EField3d.csv')
     endpoints = []
     rng = np.random.default_rng()
     for i in range(2000):
-        init_x = rng.random()*12
-        init_y = rng.random()*12
+        init_x = rng.random()*6 - 6
+        init_y = rng.random()*6 - 6
         init_z = -90
         #print(i)
         endpoints.append(simfield.calc_drift([init_x, init_y, -90], -0.1))
     x, y, z = np.array(endpoints).T
     fig1, ax1 = plt.subplots(figsize=(15, 15))
-    ax1.hist2d(x, y, bins=(60, 60), cmap='Blues')
+    histbins = np.arange(-9, 3, 0.2)
+    ax1.hist2d(x, y, bins=[histbins, histbins], cmap='Blues')
     ax1.tick_params(axis='both', which='major', labelsize=22)
     ax1.set_xlabel('X (mm)', fontsize=24)
     ax1.set_ylabel('Y (mm)', fontsize=24)
-    ax1.set_xticks(np.arange(0, 12, 0.5))
-    ax1.set_yticks(np.arange(0, 12, 0.5))
+    #ax1.set_xticks(np.arange(0, 12, 0.5))
+    #ax1.set_yticks(np.arange(0, 12, 0.5))
     ax1.grid()
     fig1.savefig('endpoints_shift.png')
