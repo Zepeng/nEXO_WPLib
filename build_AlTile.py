@@ -22,6 +22,13 @@ def read_wp(tfile):
     h3dfile.Close()
     return h_3d
 
+def read_bin1(xbin, ybin):
+    libfile = ROOT.TFile('nEXO_6mm_COMSOL.root', 'READ')
+    h_1d = libfile.Get('wp_x{}_y{}'.format(xbin, ybin))
+    bin_value = h_1d.GetBinContent(1)
+    libfile.Close()
+    return bin_value
+
 if __name__ == '__main__':
     ROOT.gROOT.SetBatch(True)
     ROOT.RooMsgService.instance().setGlobalKillBelow(ROOT.RooFit.WARNING)
@@ -30,7 +37,7 @@ if __name__ == '__main__':
     ROOT.gStyle.SetOptFit(0)
 
     #read the axis from a subfile and save for the merged library file.
-    wpfile = ROOT.TFile('nEXO_6mm_COMSOL.root', 'RECREATE')
+    wpfile = ROOT.TFile('nEXO_AlTile_COMSOL.root', 'RECREATE')
     xaxis_new, yaxis_new, zaxis_new = read_axes('./outputs/WP_3d_x60.root')
     wpfile.cd()
     xaxis_new.SetTitle('X (mm)')
@@ -60,7 +67,8 @@ if __name__ == '__main__':
                 biny = yaxis_new.FindBin(y + 0.05)
                 for k in range(1, zaxis_new.GetNbins() + 1):
                     wpHist.SetBinContent(k, 0)
-                for k in range(1, h_3d.GetNbinsZ() + 1):
+                wpHist.SetBinContent(1, read_bin1(xbin, ybin))
+                for k in range(2, h_3d.GetNbinsZ() + 1):
                     wpHist.SetBinContent(k, h_3d.GetBinContent(xbin, ybin, k)*1e5)
                 #if wpHist.GetMaximum()> 0.9*1e5:
                 #    print(xbin, ybin)

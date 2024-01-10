@@ -2,6 +2,8 @@ import numpy as np
 import pandas as pd
 from scipy.interpolate import NearestNDInterpolator
 import matplotlib.pyplot as plt
+from math import copysign
+sign = lambda x : copysign(1, x)
 
 class EField:
     def __init__(self, fcomsol):
@@ -12,8 +14,8 @@ class EField:
         Ez = []
         points = []
         for i in range(len(comsol['x'])):
-                x = 1000*float(comsol['x'][i])
-                y = 1000*float(comsol['y'][i]) + 3
+                x = 1000*float(comsol['x'][i]) - 6
+                y = 1000*float(comsol['y'][i])
                 z = 1000*float(comsol['z'][i])
                 points.append([x, y, z])
                 Ex.append(comsol['Ex'][i])
@@ -44,22 +46,22 @@ class EField:
                 init_y += delta_y/mag*step
                 init_z += delta_z/mag*step
             #print(np.array([init_x + 0.006*mod_x, init_y + 0.006*mod_y, z]) - np.array(point) )
-            return [point[0]/abs(point[0])*(init_x + 6*mod_x), point[1]/abs(point[1])*(init_y + 6*mod_y), z]
+            return [sign(point[0])*(init_x + 6*mod_x), sign(point[1])*(init_y + 6*mod_y), z]
 
 if __name__ == '__main__':
     print('EField Sim')
-    simfield = EField('/scratch/zpli/EField3d.csv')
+    simfield = EField('/scratch/zpli/EField3d_v2.csv')
     endpoints = []
     rng = np.random.default_rng()
     for i in range(2000):
-        init_x = rng.random()*6 - 6
-        init_y = rng.random()*6 - 6
+        init_x = rng.random()*6
+        init_y = rng.random()*6
         init_z = -90
         #print(i)
         endpoints.append(simfield.calc_drift([init_x, init_y, -90], -0.1))
     x, y, z = np.array(endpoints).T
     fig1, ax1 = plt.subplots(figsize=(15, 15))
-    histbins = np.arange(-9, 3, 0.2)
+    histbins = np.arange(-3, 9, 0.2)
     ax1.hist2d(x, y, bins=[histbins, histbins], cmap='Blues')
     ax1.tick_params(axis='both', which='major', labelsize=22)
     ax1.set_xlabel('X (mm)', fontsize=24)

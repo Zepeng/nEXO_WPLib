@@ -54,7 +54,7 @@ if __name__ == '__main__':
     args = parser.parse_args()
 
     print('EField Sim')
-    simfield = EField('/scratch/zpli/EField3d.csv')
+    simfield = EField('/scratch/zpli/EField3d_v2.csv')
     endpoints = []
     XBins, YBins, ZBins = wp_bins()
     wpfile = ROOT.TFile('./outputs/WP_3d_x{}.root'.format(args.xindex), 'RECREATE')
@@ -94,11 +94,11 @@ if __name__ == '__main__':
                 print(x, y, z, init_x, init_y, init_z, binx, biny, binz, wp)
                 if wp > 1.0:
                     wp = 1.0
-                if binz == 0:
-                    if wp <= 0.51:
-                        wp = 0
-                    else:
+                if binz == 1:
+                    if abs(init_x) < 0.5 and abs(init_y) < 48:
                         wp = 1
+                    else:
+                        wp = 0
                 h_3D.SetBinContent(binx , biny , binz , wp)
     h_3D.Write()
     wpfile.Close()
